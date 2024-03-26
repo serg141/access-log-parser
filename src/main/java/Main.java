@@ -1,33 +1,16 @@
-import java.io.File;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        int count = 0;
+        Integer[] marks = {2, 4, 5, 3, 4, 5};
+        ArrayList<Integer> m = new ArrayList<>();
+        m.addAll(List.of(marks));
 
-        System.out.println("Введите текст и нажмите <Enter>: ");
-        String text = new Scanner(System.in).nextLine();
-        System.out.println("Длина текста: " + text.length());
+        Student s1 = new Student("Sergey");
+        Student s2 = new Student("Mark", m);
 
-        while(true) {
-            System.out.print("Укажите путь к файлу: ");
-            String path = new Scanner(System.in).nextLine();
-            File file = new File(path);
-            boolean fileExists = file.exists();
-            boolean isDirectory = file.isDirectory();
-
-            if (!fileExists) {
-                System.out.println("Такого файла не существует");
-                continue;
-            }
-
-            if (isDirectory) {
-                System.out.println("Это путь к папке, а не файлу");
-                continue;
-            }
-
-            count++;
-            System.out.println("Путь указан верно\nЭто файл номер " + count);
-        }
+        System.out.println(s1);
+        System.out.println(s2);
     }
 }
