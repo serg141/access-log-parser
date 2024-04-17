@@ -1,24 +1,21 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.time.LocalDateTime;
+
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
         int count = 0;
-        int allStr;
-        double googleBot, yandexBot;
-        String line;
 
-        List<String> ipAddresses = new ArrayList<>();
-        List<String> lessProperties = new ArrayList<>();
-        List<String> requestDate = new ArrayList<>();
-        List<String> requestMethodAndPath = new ArrayList<>();
-        List<String> httpResponse = new ArrayList<>();
-        List<String> dataSize = new ArrayList<>();
-        List<String> refererPath = new ArrayList<>();
-        List<String> userAgent = new ArrayList<>();
+        int allStr, responseCode, responseSize;
+        double googleBot, yandexBot;
+        String line, ipAddress, requestMethod, requestPath, referer, browser, os;
+        LocalDateTime requestDate;
+        UserAgent userAgent;
+        Statistics statistics = new Statistics();
+
 
         System.out.println("Введите текст и нажмите <Enter>: ");
         String text = new Scanner(System.in).nextLine();
@@ -55,57 +52,47 @@ public class Main {
                 BufferedReader reader = new BufferedReader(fileReader);
 
                 while ((line = reader.readLine()) != null) {
+                    statistics.getTrafficRate(line);
                     int length = line.length();
                     if (length > 1024) throw new StrLengthException("The length is more than 1024");
                     allStr++;
 
-                    //ipAddresses.add(line.substring(0, line.indexOf(" ")));
 
-                    line = line.substring(line.indexOf(" ")).trim();
-                    //lessProperties.add(line.substring(0, line.indexOf("[") - 1));
+                    LogEntry logEntry = new LogEntry(line);
+                    ipAddress = logEntry.getIpAddress();
+                    requestDate = logEntry.getRequestDate();
+                    requestMethod = String.valueOf(logEntry.getRequestMethod());
+                    requestPath = logEntry.getRequestPath();
+                    responseCode = logEntry.getResponseCode();
+                    responseSize = logEntry.getResponseSize();
+                    referer = logEntry.getReferer();
+                    userAgent = logEntry.getUserAgent();
+                    browser = userAgent.getBrowser();
+                    os = userAgent.getOs().toString();
 
-                    line = line.substring(line.indexOf("[")).trim();
-                    //requestDate.add(line.substring(line.indexOf("["), line.indexOf("]") + 1));
+                    CountBot countBot = new CountBot(userAgent.getUa());
+                    googleBot += countBot.getGoogle();
+                    yandexBot += countBot.getYandex();
 
-                    line = line.substring(line.indexOf("\"") + 1).trim();
-                    //requestMethodAndPath.add( line.substring(0, line.indexOf("\"")));
+                    System.out.println("ipAddresses - " + ipAddress);
+                    System.out.println("requestDate - " + requestDate);
+                    System.out.println("requestMethod - " + requestMethod);
+                    System.out.println("requestPath - " + requestPath);
+                    System.out.println("responseCode - " + responseCode);
+                    System.out.println("responseSize - " + responseSize);
+                    System.out.println("referer - " + referer);
+                    System.out.println("userAgent - " + userAgent.getUa());
+                    System.out.println("browser - " + browser);
+                    System.out.println("OS - " + os);
+                    System.out.println();
 
-                    line = line.substring(line.indexOf("\"")).trim();
-                    //httpResponse.add(line.substring(1, line.indexOf(" ") + 4).trim());
-
-                    line = line.substring(5).trim();
-                    //dataSize.add(line.substring(0, line.indexOf("\"")).trim());
-
-                    line = line.substring(line.indexOf("\"") + 1).trim();
-                    //if (line.startsWith("http")) refererPath.add(line.substring(line.indexOf("http"), line.indexOf(" ") - 1).trim());
-
-                    line = line.substring(line.indexOf(" ") + 2).trim();
-                    userAgent.add(line.trim());
                 }
-
-                for (String s : userAgent) {
-                    if (s.contains(";") && s.contains("(") && s.contains(")")) {
-                        s = s.substring(s.indexOf("(") + 1, s.indexOf(")")).trim();
-
-                        String[] parts = s.split(";");
-
-                        for (int j = 0; j < parts.length; j++) {
-                            parts[j] = parts[j].replace(" ", "");
-                        }
-
-                        if (parts.length >= 2) {
-                            String fragment = parts[1];
-                            if (fragment.contains("Googlebot")) googleBot++;
-                            if (fragment.contains("YandexBot")) yandexBot++;
-                        }
-                    }
-                }
+                reader.close();
 
                 System.out.println("Всего строк в файле: " + allStr);
                 System.out.println("GoogleBot: " + googleBot / allStr);
                 System.out.println("YandexBot: " + yandexBot / allStr);
-                reader.close();
-                System.out.println();
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
