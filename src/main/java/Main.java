@@ -1,17 +1,21 @@
 import java.io.*;
+
 import java.time.LocalDateTime;
+
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
         int count = 0;
+
         int allStr, responseCode, responseSize;
         double googleBot, yandexBot;
         String line, ipAddress, requestMethod, requestPath, referer, browser, os;
         LocalDateTime requestDate;
         UserAgent userAgent;
         Statistics statistics = new Statistics();
+
 
         System.out.println("Введите текст и нажмите <Enter>: ");
         String text = new Scanner(System.in).nextLine();
@@ -53,6 +57,7 @@ public class Main {
                     if (length > 1024) throw new StrLengthException("The length is more than 1024");
                     allStr++;
 
+
                     LogEntry logEntry = new LogEntry(line);
                     ipAddress = logEntry.getIpAddress();
                     requestDate = logEntry.getRequestDate();
@@ -80,6 +85,7 @@ public class Main {
                     System.out.println("browser - " + browser);
                     System.out.println("OS - " + os);
                     System.out.println();
+
                 }
                 reader.close();
 
