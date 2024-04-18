@@ -1,7 +1,5 @@
 import java.io.*;
-
 import java.time.LocalDateTime;
-
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -92,6 +90,8 @@ public class Main {
                 System.out.println("Всего строк в файле: " + allStr);
                 System.out.println("GoogleBot: " + googleBot / allStr);
                 System.out.println("YandexBot: " + yandexBot / allStr);
+                System.out.println("Страницы сайта: " + statistics.getUrlList());
+                System.out.println("Доли операционных систем: " + statistics.getTraffic());
 
             } catch (Exception ex) {
                 ex.printStackTrace();
