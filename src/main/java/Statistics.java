@@ -36,8 +36,10 @@ public class Statistics {
         else countOs.put(s, 1);
 
         String b = logEntry.getUserAgent().getBrowser();
+        if (b.equals(Eos.NO_EOS.name())) notExistPage.add(logEntry.getRequestPath());
         if (statisticUserBrowser.containsKey(b)) statisticUserBrowser.put(b, statisticUserBrowser.get(b) + 1);
         else statisticUserBrowser.put(b, 1);
+        statisticUserBrowser.remove("Тип браузера не передан в запросе");
     }
 
     private void countTrafficOS() {
@@ -49,10 +51,8 @@ public class Statistics {
 
     private void countUserBrowserTraffic() {
         double sum = 0;
-        Set<String> set = new HashSet<>();
-        if (!(statisticUserBrowser.equals("Тип браузера не передан в запросе"))) {
-            set = statisticUserBrowser.keySet();
-        }
+        Set<String> set = statisticUserBrowser.keySet();
+        set.remove("Тип браузера не передан в запросе");
         for (String s : set) sum += statisticUserBrowser.get(s);
         for (String s : statisticUserBrowser.keySet()) {
             userBrowserTraffic.put(s, statisticUserBrowser.get(s) / sum);
