@@ -1,5 +1,6 @@
 import java.io.*;
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -90,8 +91,16 @@ public class Main {
                 System.out.println("Всего строк в файле: " + allStr);
                 System.out.println("GoogleBot: " + googleBot / allStr);
                 System.out.println("YandexBot: " + yandexBot / allStr);
-                System.out.println("Страницы сайта: " + statistics.getUrlList());
                 System.out.println("Доли операционных систем: " + statistics.getTraffic());
+
+                System.out.println("Страницы сайта: " + statistics.getUrlList());
+                for (String s : statistics.getUrlList()) System.out.println(s);
+
+                System.out.println("Список несуществующих страниц сайта: ");
+                for (String s : statistics.getNotExistPage()) System.out.println(s);
+
+                System.out.println("Браузеры используемые пользователями: " + statistics.getStatisticUserBrowser());
+                System.out.println("Статистика браузеров используемых пользователями: " + statistics.getUserBrowserTraffic());
 
             } catch (Exception ex) {
                 ex.printStackTrace();
