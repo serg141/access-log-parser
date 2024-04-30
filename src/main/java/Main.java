@@ -1,6 +1,5 @@
 import java.io.*;
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -100,7 +99,12 @@ public class Main {
                 for (String s : statistics.getNotExistPage()) System.out.println(s);
 
                 System.out.println("Браузеры используемые пользователями: " + statistics.getStatisticUserBrowser());
-                System.out.println("Статистика браузеров используемых пользователями: " + statistics.getUserBrowserTraffic());
+                System.out.println("Статистика браузеров используемых пользователями: " +
+                        statistics.getUserBrowserTraffic());
+
+                statistics.checkBrowserTrafficBot();
+                statistics.avgErrorRequestByHour();
+                statistics.avgOneUserVisit();
 
             } catch (Exception ex) {
                 ex.printStackTrace();

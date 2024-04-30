@@ -3,6 +3,7 @@ public class UserAgent {
     private final Eos os;
     private final String ua;
 
+    //Разбирает UserAgent, выделяет тип браузера, вид ОС
     public UserAgent(String userAgent) {
         String userOs;
         String userBrowser = "";
@@ -23,15 +24,18 @@ public class UserAgent {
         this.browser = userBrowser;
     }
 
+    //Возвращает тип операционной системы
     Eos getOs() {
         return os;
     }
 
+    //Возвращает тип браузера
     public String getBrowser() {
         if (browser.isEmpty()) return "Тип браузера не передан в запросе";
         else return browser;
     }
 
+    //Возвращает UserAgent
     public String getUa() {
         return ua;
     }
