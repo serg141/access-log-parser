@@ -1,6 +1,7 @@
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Statistics {
     private int totalTraffic, visitRealUser, countErrorRequest, countVisitRealIPAddress;
@@ -12,6 +13,9 @@ public class Statistics {
     private final HashMap<String, Integer> statisticUserBrowser = new HashMap<>();
     private final HashMap<String, Double> userBrowserTraffic = new HashMap<>();
     private final List<String> ipAddresses = new ArrayList<>();
+    private final HashMap<Integer, Integer> visitUserBySecond = new HashMap<>();
+    private final HashSet<String> refererUserLink = new HashSet<>();
+    private final HashMap<String, Integer> userStatistic = new HashMap<>();
 
     public Statistics() {
         this.totalTraffic = 0;
@@ -46,12 +50,22 @@ public class Statistics {
         else statisticUserBrowser.put(b, 1);
         statisticUserBrowser.remove("Тип браузера не передан в запросе");
 
-        if (!logEntry.getUserAgent().toString().contains("bot")) {
+        if (logEntry.getUserAgent().isBot()) {
+            countUserStatistic(logEntry);
             visitRealUser++;
             countVisitRealIPAddress++;
             if (start.isAfter(logEntry.getRequestDate())) start = logEntry.getRequestDate();
             if (end.isBefore(logEntry.getRequestDate())) end = logEntry.getRequestDate();
             if (!ipAddresses.contains(logEntry.getIpAddress())) ipAddresses.add(logEntry.getIpAddress());
+
+            int t = logEntry.getRequestDate().getSecond();
+            if (visitUserBySecond.containsKey(t)) visitUserBySecond.put(t, visitUserBySecond.get(t) + 1);
+            else visitUserBySecond.put(t, 1);
+
+            if (logEntry.getReferer().contains("https://")) {
+                String str = logEntry.getReferer();
+                refererUserLink.add(Stream.of(str.split("/")).skip(2).findFirst().get());
+            }
         }
     }
 
@@ -96,12 +110,19 @@ public class Statistics {
         countErrorRequest++;
     }
 
+    //Расчёт максимальной посещаемости одним пользователем
+    private void countUserStatistic(LogEntry logEntry) {
+        String str = logEntry.getIpAddress();
+        if (userStatistic.containsKey(str)) userStatistic.put(str, userStatistic.get(str) + 1);
+        else userStatistic.put(str, 1);
+    }
+
     //Возвращает список всех существующих страниц сайта
     public HashSet<String> getUrlList() {
         return urlList;
     }
 
-    //Возвращает список гесуществующих страниц сайта
+    //Возвращает список гесуществующих страниц сайтаbgt,mf
     public HashSet<String> getNotExistPage() {
         return notExistPage;
     }
@@ -133,5 +154,20 @@ public class Statistics {
     public void avgOneUserVisit() {
         int i = ipAddresses.size() - 1;
         System.out.println("Средняя посещаемость одним пользователем: " + countVisitRealIPAddress / i);
+    }
+
+    //Расчет пиковой посещаемости сайта (в секунду)
+    public void calculatingPeakWebsiteTrafficPerSecond() {
+        System.out.println("Пиковая посещаемость сайта в секунду: " + visitUserBySecond.values().stream()
+                .max(Integer::compareTo).get());
+    }
+
+    public HashSet<String> getRefererUserLink() {
+        return refererUserLink;
+    }
+
+    public void getUserStatistic() {
+        System.out.println("Максимальная посещаемость пользователем: " + userStatistic.values().stream()
+                .max(Integer::compareTo).get());
     }
 }
