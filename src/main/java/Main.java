@@ -102,9 +102,14 @@ public class Main {
                 System.out.println("Статистика браузеров используемых пользователями: " +
                         statistics.getUserBrowserTraffic());
 
+                System.out.println("Список сайтов, со страниц которых есть ссылки на текущий сайт: ");
+                for (String s : statistics.getRefererUserLink()) System.out.println(s);
+
                 statistics.checkBrowserTrafficBot();
                 statistics.avgErrorRequestByHour();
                 statistics.avgOneUserVisit();
+                statistics.calculatingPeakWebsiteTrafficPerSecond();
+                statistics.getUserStatistic();
 
             } catch (Exception ex) {
                 ex.printStackTrace();

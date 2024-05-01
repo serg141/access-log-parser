@@ -2,12 +2,14 @@ public class UserAgent {
     private final String browser;
     private final Eos os;
     private final String ua;
+    private boolean bot;
 
     //Разбирает UserAgent, выделяет тип браузера, вид ОС
     public UserAgent(String userAgent) {
         String userOs;
         String userBrowser = "";
         this.ua = userAgent;
+        this.bot = false;
 
         if (userAgent.contains("Windows")) userOs = Eos.WINDOWS.name();
         else if (userAgent.contains("Mac OS")) userOs = Eos.MACOS.name();
@@ -19,6 +21,8 @@ public class UserAgent {
         else if (userAgent.contains("OPR/") || userAgent.contains("Presto/")) userBrowser = "Opera";
         else if (userAgent.contains("Safari/") && !userAgent.contains("Chrome/")) userBrowser = "Safari";
         else if (userAgent.contains("Chrome/")) userBrowser = "Chrome";
+
+        if (!userAgent.contains("bot")) bot = true;
 
         this.os = Eos.valueOf(userOs);
         this.browser = userBrowser;
@@ -38,6 +42,10 @@ public class UserAgent {
     //Возвращает UserAgent
     public String getUa() {
         return ua;
+    }
+
+    public boolean isBot() {
+        return bot;
     }
 }
 
